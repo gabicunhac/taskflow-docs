@@ -9,25 +9,22 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Get started",
-        "pages": [
-          "index",
-          "authentication",
-          "quickstart"
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": ["index", "authentication", "quickstart"]
+          },
+          {
+            "group": "Guides",
+            "pages": ["workflow", "troubleshooting", "faq"]
+          }
         ]
       },
       {
-        "group": "Guides",
-        "pages": [
-          "workflow",
-          "troubleshooting",
-          "faq"
-        ]
-      },
-      {
-        "group": "API reference",
+        "tab": "API reference",
         "openapi": "openapi.yaml"
       }
     ]
