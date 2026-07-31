@@ -1,123 +1,53 @@
 ---
 title: "Introduction"
-description: "Welcome to your project"
+description: "Learn what the TaskFlow API is and how it works"
 ---
 
----
+## What is TaskFlow? 🚀
 
-title: "Quickstart"
+TaskFlow is a REST API for task management. With it, you can create projects, add tasks inside them, update the status of each task, and delete tasks you no longer need.
 
-description: "Create your first project and task in under 5 minutes"
+Think of TaskFlow as the engine behind a to-do app: it stores and organizes your data, and you decide how to use it.
 
----
+## How it works
 
-This guide walks you through the core TaskFlow workflow: creating a project, adding a task to it, and listing the tasks in that project. By the end, you will have made your first three API calls.
+TaskFlow has only two resources: **projects** and **tasks**. Every task lives inside a project. Because of that, the API follows a clear order:
 
-## Prerequisites
+1. First, create a project and save its `project_id`
+2. Then, create tasks inside that project using the `project_id`
+3. Now you can list, update, or delete tasks using their `task_id`
 
-- Your API key
-- - A terminal with `curl`, or an API client such as Postman
+💡 If you skip a step, the API returns an error. For example: if you try to create a task with a `project_id` that does not exist, you get a `404 Not Found`.
 
-\<Info\>
+## Available endpoints
 
-The first request after a period of inactivity can take up to 60 seconds while the server starts. All later requests respond in under a second.
+The API has five endpoints. Here is the full map:
 
-\</Info\>
+| Method | Endpoint | What it does |
+| ------ | -------- | ------------ |
+| POST | `/projects` | Create a project |
+| POST | `/tasks` | Create a task inside a project |
+| GET | `/projects/{project_id}/tasks` | List all tasks in a project |
+| PATCH | `/tasks/{task_id}` | Update a task |
+| DELETE | `/tasks/{task_id}` | Delete a task |
 
-## Step 1: Create a project
+## Task lifecycle
 
-Every task in TaskFlow lives inside a project, so this is always the first call.
+Every new task starts with the status `pending`. From there, you can move it forward using the update endpoint:
 
-```text
-```
+`pending` → `in_progress` → `done`
 
-bash
+## Before you start
 
-curl [https://test-writechoice.onrender.com/projects](https://test-writechoice.onrender.com/projects) \\
+You only need two things:
 
-  -X POST \\
+- **Base URL:** `https://test-writechoice.onrender.com`
+- **API key:** every request needs a Bearer token. The [Authentication](/authentication) page shows you how to use it.
 
-  -H "Authorization: Bearer YOUR\_API\_KEY" \\
+<Note>
+The first request can take up to 60 seconds if the server was idle. Don't worry, this is normal on the test server. The next requests are fast.
+</Note>
 
-  -H "Content-Type: application/json" \\
-
-  -d '\{"name": "My first project", "description": "Testing the TaskFlow API"\}'
-
-````text
----
-title: "Workflow"
-description: "How projects and tasks connect, and the order your calls must follow"
----
-
-TaskFlow endpoints depend on each other. This page explains the order of operations and what happens to a task during its lifecycle.
-
-## The dependency chain
-
-Each resource you create unlocks the next operations:
-
-1. **Create a project** (`POST /projects`), which returns the `project_id`
-2. **Create tasks** (`POST /tasks`) using a valid `project_id`
-3. **List, update, or delete tasks** using a valid `project_id` or `task_id`
-
-Skipping a step results in a `404 Not Found` error. For example, you cannot create a task before creating a project.
-
-## The task lifecycle
-
-Every task moves through three possible statuses:
-
-| Status | Meaning |
-| ------ | ------- |
-| `pending` | The task has not been started. This is the default status for new tasks. |
-| `in_progress` | The task is actively being worked on. |
-| `done` | The task has been completed. |
-
-To change a status, call `PATCH /tasks/{task_id}`:
-
-```bash
-curl https://test-writechoice.onrender.com/tasks/YOUR_TASK_ID \
-  -X PATCH \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"status": "in_progress"}'
-```
-````
-
-The response shows the new status. Note that `updated_at` changes, while `created_at` stays the same:
-
-````text
-json
-{
-  "task_id": "3272f799-9728-42f9-98ad-f99c8d21128d",
-  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
-  "title": "My first task",
-  "description": "Trying out the API",
-  "status": "in_progress",
-  "created_at": "2026-07-31T00:25:32.624Z",
-  "updated_at": "2026-07-31T00:29:50.245Z"
-}
-```
-
-## Deleting a task
-
-When a task is no longer needed, delete it with `DELETE /tasks/{task_id}`:
-
-```bash
-curl https://test-writechoice.onrender.com/tasks/YOUR_TASK_ID \
-  -X DELETE \
-  -H "Authorization: Bearer YOUR_API_KEY"
-```
-
-<Warning>
-Deleting a task is permanent and cannot be undone.
-</Warning>
-
-After deletion, listing the project's tasks confirms it is gone:
-
-```json
-{
-  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
-  "total": 0,
-  "tasks": []
-}
-```
-````
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Create your first project and task in under 5 minutes
+</Card>

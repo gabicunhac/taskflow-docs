@@ -1,0 +1,68 @@
+---
+title: "Troubleshooting"
+description: "The most common errors and how to fix them"
+---
+
+Something went wrong? Good news: TaskFlow errors always tell you what happened. Every error has the same structure, with a type and a message in plain English:
+
+```json
+{
+  "error": "Not Found",
+  "message": "No project found with project_id 'abc123'."
+}
+```
+
+Here is a quick map of the errors you may find: 🗺️
+
+| Status code | Meaning | Most common cause |
+| ----------- | ------- | ----------------- |
+| `400 Bad Request` | The request body has a problem | A required field is missing |
+| `401 Unauthorized` | Authentication failed | Missing or wrong API key |
+| `404 Not Found` | The resource does not exist | Wrong ID, or a step was skipped |
+
+## 401 Unauthorized
+
+```json
+{
+  "error": "Unauthorized",
+  "message": "Missing or invalid API key. Provide a valid key in the Authorization header as: Bearer <api_key>"
+}
+```
+
+**Why it happens:** the request has no `Authorization` header, or the key is wrong.
+
+**How to fix:** send the header `Authorization: Bearer YOUR_API_KEY` in every request. The [Authentication](/authentication) page shows the full setup.
+
+## 400 Bad Request
+
+```json
+{
+  "error": "Bad Request",
+  "message": "The 'title' field is required and must be a non-empty string."
+}
+```
+
+**Why it happens:** a required field is missing (`name` for projects, `title` and `project_id` for tasks), the body is empty, or the `status` value is not valid.
+
+**How to fix:** read the message, it names the exact field. Check that your request has a JSON body, the `Content-Type: application/json` header, and valid values. The only valid statuses are `pending`, `in_progress`, and `done`.
+
+## 404 Not Found
+
+```json
+{
+  "error": "Not Found",
+  "message": "No project found with project_id 'abc123'. Create a project first using POST /projects."
+}
+```
+
+**Why it happens:** the `project_id` or `task_id` does not exist. Maybe the ID has a typo, the resource was deleted, or a step in the workflow was skipped.
+
+**How to fix:** copy the ID exactly as the API returned it. If you are sure the resource existed before, read the note below. 👇
+
+<Note>
+The test server keeps data in memory only. When it restarts after some idle time, everything you created is cleared. If something you created now returns `404`, just create it again and run your calls in sequence.
+</Note>
+
+## The first request never ends
+
+Not an error, but it looks like one! The test server sleeps when nobody uses it. The first request after that can take up to 60 seconds while it wakes up. Just wait, don't cancel. ⏳ The next requests respond in under a second.

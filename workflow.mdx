@@ -1,0 +1,76 @@
+---
+title: "Workflow"
+description: "How projects and tasks connect, and the full task lifecycle"
+---
+
+In TaskFlow, the endpoints depend on each other. This page shows you the full journey of a task: from creation to deletion. 🔄
+
+## The order matters
+
+Each resource you create unlocks the next step:
+
+1. **Create a project** → you get a `project_id`
+2. **Create tasks** inside it → you get a `task_id` for each one
+3. **List, update, or delete** tasks using those IDs
+
+If you skip a step, the API returns a `404 Not Found`. For example: you cannot create a task before creating a project.
+
+## The task lifecycle
+
+Every task has a `status` field with three possible values:
+
+| Status | Meaning |
+| ------ | ------- |
+| `pending` | The task has not been started yet. This is the default for new tasks. |
+| `in_progress` | Someone is working on the task. |
+| `done` | The task is completed. |
+
+To move a task forward, call `PATCH /tasks/{task_id}` with the new status:
+
+```bash
+curl https://test-writechoice.onrender.com/tasks/YOUR_TASK_ID \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "in_progress"}'
+```
+
+The response shows the updated task. 👀 Look at the timestamps: `updated_at` changed, but `created_at` stayed the same.
+
+```json
+{
+  "task_id": "3272f799-9728-42f9-98ad-f99c8d21128d",
+  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
+  "title": "My first task",
+  "description": "Trying out the API",
+  "status": "in_progress",
+  "created_at": "2026-07-31T00:25:32.624Z",
+  "updated_at": "2026-07-31T00:29:50.245Z"
+}
+```
+
+You can also update the `title` and `description` with the same endpoint. Just remember: send at least one field.
+
+## Deleting a task
+
+When a task is no longer needed, delete it:
+
+```bash
+curl https://test-writechoice.onrender.com/tasks/YOUR_TASK_ID \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+<Warning>
+Deleting a task is permanent. There is no undo.
+</Warning>
+
+Want to confirm it worked? List the tasks again. The deleted task is gone:
+
+```json
+{
+  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
+  "total": 0,
+  "tasks": []
+}
+```

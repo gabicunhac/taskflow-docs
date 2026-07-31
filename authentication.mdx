@@ -1,0 +1,43 @@
+---
+title: "Authentication"
+description: "How to authenticate your requests to the TaskFlow API"
+---
+
+Every request to the TaskFlow API needs authentication. Think of your API key as your access card: you show it on every request. Without it, the API returns a `401 Unauthorized` error. 🔑
+
+## How it works
+
+TaskFlow uses Bearer token authentication. In practice, this means adding one header to every request, with your API key in it:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Example
+
+Here is a complete request with the authentication header:
+
+```bash
+curl https://test-writechoice.onrender.com/projects \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My first project"}'
+```
+
+## What happens if the key is missing?
+
+The API answers with a `401 Unauthorized` and tells you exactly what to do:
+
+```json
+{
+  "error": "Unauthorized",
+  "message": "Missing or invalid API key. Provide a valid key in the Authorization header as: Bearer <api_key>"
+}
+```
+
+If you see this error, check two things: the header exists, and the key is correct.
+
+<Warning>
+Your API key is a secret. Never expose it in client-side code or public repositories.
+</Warning>

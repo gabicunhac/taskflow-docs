@@ -1,0 +1,36 @@
+---
+title: "FAQ"
+description: "Quick answers to common questions about the TaskFlow API"
+---
+
+The questions everybody asks, answered in one line or two. 💬
+
+<AccordionGroup>
+  <Accordion title="Do I need to create a project before creating a task?">
+    Yes! Every task lives inside a project. If you send a `project_id` that does not exist, the API returns a `404 Not Found`.
+  </Accordion>
+
+  <Accordion title="What status does a new task have?">
+    Every new task starts as `pending`, even if you don't send a status. To change it, use `PATCH /tasks/{task_id}`.
+  </Accordion>
+
+  <Accordion title="Which fields can I update on a task?">
+    You can update `status`, `title`, and `description`, alone or together. Just send at least one. The `project_id` of a task cannot be changed.
+  </Accordion>
+
+  <Accordion title="Can I undo a task deletion?">
+    No. Deleting is permanent. If you need the task again, create a new one.
+  </Accordion>
+
+  <Accordion title="Can I list or delete projects?">
+    Not yet. The API has five endpoints, all listed in the [Introduction](/index). You can create projects and list their tasks, but projects themselves cannot be listed, updated, or deleted.
+  </Accordion>
+
+  <Accordion title="Why is my first request so slow?">
+    The test server sleeps when idle. The first request can take up to 60 seconds while it wakes up. The next ones are fast.
+  </Accordion>
+
+  <Accordion title="Why did my project or task disappear?">
+    The test server keeps data in memory only. When it restarts, everything is cleared. Just create your resources again.
+  </Accordion>
+</AccordionGroup>

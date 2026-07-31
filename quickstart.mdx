@@ -1,47 +1,108 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Create your first project and task in under 5 minutes"
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+Let's make your first three API calls together: create a project, add a task to it, and list the tasks. Step by step, no rush. 🚀
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+## What you need
 
-## Prerequisites
+- Your API key
+- A terminal with `curl`, or an API client like Postman
 
-Before you begin, you must have:
+<Info>
+The first request can take up to 60 seconds if the server was idle. Wait for it, this is normal. The next requests respond in under a second.
+</Info>
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+## Step 1: Create a project
 
-## Get started
+In TaskFlow, every task lives inside a project. So the first call is always this one:
 
-<Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+```bash
+curl https://test-writechoice.onrender.com/projects \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My first project", "description": "Testing the TaskFlow API"}'
+```
 
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+The API answers with `201 Created` and returns your new project:
 
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+```json
+{
+  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
+  "name": "My first project",
+  "description": "Testing the TaskFlow API",
+  "created_at": "2026-07-31T00:24:11.756Z"
+}
+```
 
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+📌 Copy the `project_id` from your response. You will need it in the next step.
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Step 2: Create a task
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+Now use your `project_id` to add a task inside the project:
+
+```bash
+curl https://test-writechoice.onrender.com/tasks \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"project_id": "YOUR_PROJECT_ID", "title": "My first task", "description": "Trying out the API"}'
+```
+
+The API answers with `201 Created`. Notice the `status` field: every new task starts as `pending`, even if you don't send a status:
+
+```json
+{
+  "task_id": "3272f799-9728-42f9-98ad-f99c8d21128d",
+  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
+  "title": "My first task",
+  "description": "Trying out the API",
+  "status": "pending",
+  "created_at": "2026-07-31T00:25:32.624Z",
+  "updated_at": "2026-07-31T00:25:32.624Z"
+}
+```
+
+## Step 3: List your tasks
+
+Time to confirm everything worked. One detail here: the `project_id` goes in the URL, not in the body.
+
+```bash
+curl https://test-writechoice.onrender.com/projects/YOUR_PROJECT_ID/tasks \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+The API answers with `200 OK` and your list of tasks:
+
+```json
+{
+  "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
+  "total": 1,
+  "tasks": [
+    {
+      "task_id": "3272f799-9728-42f9-98ad-f99c8d21128d",
+      "project_id": "15978c3f-e860-4372-b268-22be0fdabcda",
+      "title": "My first task",
+      "description": "Trying out the API",
+      "status": "pending",
+      "created_at": "2026-07-31T00:25:32.624Z",
+      "updated_at": "2026-07-31T00:25:32.624Z"
+    }
+  ]
+}
+```
+
+That's it! 🎉 You created a project, added a task, and listed it back. These three calls are the heart of TaskFlow.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Workflow" icon="diagram-project" href="/workflow">
+    Learn how to update and delete tasks
+  </Card>
+  <Card title="Troubleshooting" icon="triangle-exclamation" href="/troubleshooting">
+    Fix the most common errors: 400, 401, and 404
+  </Card>
+</CardGroup>
