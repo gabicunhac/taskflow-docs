@@ -20,6 +20,14 @@
           {
             "group": "Guides",
             "pages": ["workflow", "troubleshooting", "faq"]
+          },
+          {
+            "group": "Automações",
+            "pages": [
+              "automacoes/visao-geral",
+              "automacoes/criar-automacao",
+              "automacoes/referencia"
+            ]
           }
         ]
       },
